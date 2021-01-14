@@ -1,8 +1,8 @@
 const hashtags = [
-    'CallOfDutyModernWarfare',
-    'callofduty',
-    'codtopplays',
-    'codclips',
+    // 'CallOfDutyModernWarfare',
+    // 'callofduty',
+    // 'codtopplays',
+    // 'codclips',
     // 'gaming',
     // 'ps5',
     // 'xbox',

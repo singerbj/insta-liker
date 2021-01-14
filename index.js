@@ -10,9 +10,9 @@ const { insta_u, insta_p } = process.env; // Only required when no cookies are s
 
 const cookieStore = new FileCookieStore('./cookies.json');
 const client = new Instagram({ username: insta_u, password: insta_p, cookieStore });
-const sleepTime = 1500;
-const minBreakMs = 900000;
-const maxBreakMs = 1800000;
+// const sleepTime = 1000;
+const minBreakMs = 600000;
+const maxBreakMs = 1200000;
 const minWatchTimeMs = 750;
 const maxWatchTimeMs = 10000;
 const pollForNewDayMs = 10000;
@@ -36,6 +36,7 @@ const asyncForEach = async (array, callback) => {
     try {
         // login if needed
         try {
+            console.log('Logging in...');
             await client.login();
         } catch (e) {
             console.log("Login wasn't needed - moving on...");
@@ -48,7 +49,6 @@ const asyncForEach = async (array, callback) => {
                 const lowercaseHashtag = hashtag.toLowerCase();
                 console.log(`Getting media for hashtag: ${lowercaseHashtag}`);
                 const result = await client.getPhotosByHashtag({ hashtag: lowercaseHashtag });
-                // console.log(result.hashtag);
                 if (result && result.hashtag && result.hashtag.edge_hashtag_to_media.edges) {
                     result.hashtag.edge_hashtag_to_media.edges.forEach((post) => {
                         if (post && post.node) {
@@ -57,8 +57,8 @@ const asyncForEach = async (array, callback) => {
                     });
                 }
                 console.log(`Number of posts to like: ${postsToLike.length}`);
-                console.log(`Sleeping for ${sleepTime / 1000} seconds.`);
-                await sleep(sleepTime);
+                // console.log(`Sleeping for ${sleepTime / 1000} seconds.`);
+                // await sleep(sleepTime);
             });
 
             // like posts
@@ -79,13 +79,14 @@ const asyncForEach = async (array, callback) => {
                                 console.log(`Liked post ${currentlyLikedPosts} / ${numberOfPostsToLike}!`);
                             } catch (e) {
                                 console.log(`Error liking post: ${post.id}`);
+                                console.error(e);
                             }
                         } else {
                             console.log('Problem with post - skipping...');
                         }
                     } else {
                         const breakTime = rand(minBreakMs, maxBreakMs);
-                        console.log(`Taking a break for ${breakTime / 1000 / 60} minutes.`);
+                        console.log(`Taking a break for ${breakTime / 1000 / 60} minutes. (Back at ${new Date(Date.now() + breakTime).toLocaleTimeString()})`);
                         currentlyLikedPosts = 0;
                         await sleep(breakTime);
                     }
